@@ -1,0 +1,2 @@
+allianceauth>=4.0
+Django>=4.2

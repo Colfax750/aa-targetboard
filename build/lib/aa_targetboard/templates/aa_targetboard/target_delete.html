@@ -1,0 +1,16 @@
+{% extends "allianceauth/base-bs5.html" %}
+{% block page_title %}Delete Target{% endblock %}
+
+{% block content %}
+<h3 class="mb-3">Delete Target</h3>
+<div class="card">
+  <div class="card-body">
+    <p>Delete <strong>{{ target.title }}</strong> in <strong>{{ target.system_name }}</strong>?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn btn-danger" type="submit">Yes, delete</button>
+      <a class="btn btn-outline-secondary" href="{% url 'aa_targetboard:detail' target.pk %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
