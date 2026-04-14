@@ -1,0 +1,153 @@
+AA TARGET BOARD - DEV REFERENCE
+================================
+
+SERVER INFO
+-----------
+Linux user:       allianceserver / Torrey
+MariaDB user:     allianceserver / PASSWORD
+AA Superuser:     allianceserver / Torrey
+
+URLS
+----
+Dashboard:        http://auth.localhost/dashboard/
+Admin:            http://auth.localhost/admin/
+Dev server:       http://localhost:8000/admin/
+                  http://127.0.0.1:8000/admin/
+
+
+SWITCH USER & ACTIVATE VENV
+----------------------------
+sudo su - allianceserver
+source /home/allianceserver/venv/auth/bin/activate
+cd /home/allianceserver/myauth
+
+
+LOCAL WSL DEVELOPMENT
+---------------------
+One-time: grant agolf access to allianceserver files
+
+    sudo apt install acl -y && \
+    sudo setfacl -m u:agolf:rx /home/allianceserver && \
+    sudo setfacl -R -m u:agolf:rwx /home/allianceserver/myauth && \
+    sudo setfacl -R -d -m u:agolf:rwx /home/allianceserver/myauth
+
+Deploy script - save as /home/allianceserver/myauth/push_plugin.sh
+
+    #!/bin/bash
+    set -e
+
+    PROJECT="$1"
+
+    if [ -z "$PROJECT" ]; then
+      echo "Usage: $0 <project-name>"
+      exit 1
+    fi
+
+    WIN_PATH="/mnt/c/Users/agolf/PycharmProjects/$PROJECT/"
+    LINUX_PATH="/home/allianceserver/myauth/$PROJECT"
+    VENV_PATH="/home/allianceserver/venv/auth/bin/activate"
+    AUTH_PATH="/home/allianceserver/myauth"
+
+    rsync -av --delete "$WIN_PATH" "$LINUX_PATH/"
+
+    cd "$AUTH_PATH"
+    source "$VENV_PATH"
+    pip install -e "$LINUX_PATH"
+    python manage.py migrate
+    python manage.py collectstatic --noinput
+    supervisorctl restart myauth:
+
+Run it:
+
+    sudo su - allianceserver
+    /home/allianceserver/myauth/push_plugin.sh aa-targetboard
+
+
+PRODUCTION UPDATE (from GitHub)
+--------------------------------
+    sudo su allianceserver
+    source /home/allianceserver/venv/auth/bin/activate && \
+    pip install --upgrade git+https://github.com/Colfax750/aa-targetboard.git && \
+    python manage.py migrate && \
+    python manage.py collectstatic --noinput && \
+    exit
+    sudo supervisorctl restart myauth:
+
+
+MIGRATIONS
+----------
+    python manage.py makemigrations aa_targetboard
+    python manage.py migrate
+
+
+RESTART & STATUS
+----------------
+    sudo supervisorctl restart myauth:
+    sudo supervisorctl status
+    sudo supervisorctl reread
+    sudo supervisorctl update
+
+
+RUN DEV SERVER
+--------------
+    python manage.py runserver 0.0.0.0:8000
+
+
+OPEN FILES IN VS CODE
+---------------------
+    code /home/allianceserver/myauth/myauth/settings/local.py
+    code /home/allianceserver/myauth/templates/
+    code /home/allianceserver/myauth/aa_targetboard/templates/aa_targetboard/target_list.html
+    code /etc/nginx/sites-available/alliance-auth.conf
+
+
+INSTALLED_APPS (local.py)
+--------------------------
+    INSTALLED_APPS += [
+        "aa_targetboard",
+    ]
+
+TEMPLATE DIRS (local.py)
+-------------------------
+    "DIRS": [os.path.join(PROJECT_DIR, "templates")],
+
+
+MARIADB
+-------
+    sudo mariadb -uroot -p
+
+    CREATE USER 'allianceserver'@'localhost' IDENTIFIED BY 'PASSWORD';
+    CREATE DATABASE alliance_auth CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+    GRANT ALL PRIVILEGES ON alliance_auth . * TO 'allianceserver'@'localhost';
+
+
+USEFUL COMMANDS
+---------------
+    # Sync files from WSL back to Windows
+    rsync -av /home/allianceserver/myauth/aa_targetboard/ /mnt/c/Users/agolf/PycharmProjects/aa-targetboard/
+
+    # Search for Target.Objective references
+    grep -R "Target\.Objective" -n aa_targetboard
+
+    # Update states
+    python manage.py update_states
+
+    # Install extra packages
+    pip install django-eveuniverse
+
+
+TROUBLESHOOTING
+---------------
+    404 on CSS              Nginx static path misconfigured
+    502 Bad Gateway         Gunicorn is down
+    Login/permission issues Django config
+    Data missing            Database issue
+
+
+PAGE HEADER HTML SNIPPET
+-------------------------
+    <div class="row">
+      <div class="col-xs-12">
+        <h2 class="page-header" style="margin-top: 10px;">Target Board</h2>
+      </div>
+    </div>

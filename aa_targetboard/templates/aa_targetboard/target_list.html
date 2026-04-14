@@ -1,7 +1,14 @@
 {% extends "allianceauth/base.html" %}
 
 {% block content %}
-<h2>Target Board</h2>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+  <h2 style="margin: 0;">Target Board</h2>
+  {% if perms.aa_targetboard.add_target %}
+    <a href="{% url 'aa_targetboard:create' %}" class="btn btn-success">
+      <i class="fas fa-plus"></i> New Target
+    </a>
+  {% endif %}
+</div>
 
 <form method="get" class="form-inline" style="margin-bottom: 15px;">
   <label>Status</label>

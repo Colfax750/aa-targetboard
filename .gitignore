@@ -1,0 +1,19 @@
+# Dev notes (contains credentials - never commit)
+DEVNOTES.md
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.iml
