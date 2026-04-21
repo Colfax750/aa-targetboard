@@ -15,6 +15,7 @@ class TargetType(models.TextChoices):
     SOVEREIGNTY = "SOVEREIGNTY", "Sovereignty"
     POS = "POS", "POS"
     METENOX = "METENOX", "Metenox"
+    ANSIBLEX = "ANSIBLEX", "Ansiblex Jump Bridge"
 
 
 class Target(models.Model):
@@ -43,6 +44,7 @@ class Target(models.Model):
         SOVEREIGNTY = "SOVEREIGNTY", "Sovereignty"
         POS = "POS", "POS"
         METENOX = "METENOX", "Metenox"
+        ANSIBLEX = "ANSIBLEX", "Ansiblex Jump Bridge"
 
     title = models.CharField(max_length=200)
 
