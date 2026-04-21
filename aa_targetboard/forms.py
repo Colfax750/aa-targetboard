@@ -14,13 +14,9 @@ class TargetForm(forms.ModelForm):
             "objective",
             "priority",
             "status",
-            "timer_start",
-            "timer_final",
             "notes",
         ]
         widgets = {
-            "timer_start": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "timer_final": forms.DateTimeInput(attrs={"type": "datetime-local"}),
             "notes": forms.Textarea(attrs={"rows": 4}),
             "solar_system": forms.Select(attrs={
                 "class": "select2-solar-system",
