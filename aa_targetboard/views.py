@@ -12,13 +12,11 @@ from .models import Target
 def _can_edit(user, target: Target) -> bool:
     if not user.is_authenticated:
         return False
-    if user.has_perm("aa_targetboard.change_target"):
-        return True
-    return target.created_by_id == getattr(user, "id", None)
+    return user.has_perm("aa_targetboard.manage_targets")
 
 
 def _can_delete(user, target: Target) -> bool:
-    return user.is_authenticated and user.has_perm("aa_targetboard.delete_target")
+    return user.is_authenticated and user.has_perm("aa_targetboard.manage_targets")
 
 
 @login_required
@@ -32,7 +30,7 @@ def solar_system_search(request):
 
 
 @login_required
-@permission_required("aa_targetboard.view_target", raise_exception=True)
+@permission_required("aa_targetboard.basic_access", raise_exception=True)
 def target_list(request):
     qs = Target.objects.select_related("solar_system")
 
@@ -103,7 +101,7 @@ def target_list(request):
     }
     return render(request, "aa_targetboard/target_list.html", context)
 @login_required
-@permission_required("aa_targetboard.add_target", raise_exception=True)
+@permission_required("aa_targetboard.manage_targets", raise_exception=True)
 def target_create(request):
     if request.method == "POST":
         form = TargetForm(request.POST)
@@ -120,14 +118,14 @@ def target_create(request):
 
 
 @login_required
-@permission_required("aa_targetboard.view_target", raise_exception=True)
+@permission_required("aa_targetboard.basic_access", raise_exception=True)
 def target_detail(request, pk: int):
     target = get_object_or_404(Target, pk=pk)
 
     update_form = TargetUpdateForm()
     if request.method == "POST":
         # posting an update/comment
-        if not request.user.has_perm("aa_targetboard.view_target"):
+        if not request.user.has_perm("aa_targetboard.basic_access"):
             raise Http404()
         update_form = TargetUpdateForm(request.POST)
         if update_form.is_valid():
@@ -149,7 +147,7 @@ def target_detail(request, pk: int):
 
 
 @login_required
-@permission_required("aa_targetboard.change_target", raise_exception=True)
+@permission_required("aa_targetboard.manage_targets", raise_exception=True)
 def target_edit(request, pk: int):
     target = get_object_or_404(Target, pk=pk)
     if not _can_edit(request.user, target):
@@ -168,7 +166,7 @@ def target_edit(request, pk: int):
 
 
 @login_required
-@permission_required("aa_targetboard.delete_target", raise_exception=True)
+@permission_required("aa_targetboard.manage_targets", raise_exception=True)
 def target_delete(request, pk: int):
     target = get_object_or_404(Target, pk=pk)
     if request.method == "POST":
