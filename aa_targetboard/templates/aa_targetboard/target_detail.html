@@ -28,10 +28,6 @@
   <div class="col-lg-6">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Timers</h5>
-        <div>Start: {% if target.timer_start %}{{ target.timer_start }}{% else %}-{% endif %}</div>
-        <div>Final: {% if target.timer_final %}{{ target.timer_final }}{% else %}-{% endif %}</div>
-        <hr>
         <h5 class="card-title">Notes</h5>
         <div style="white-space: pre-wrap;">{% if target.notes %}{{ target.notes }}{% else %}<span class="text-muted">None</span>{% endif %}</div>
       </div>
