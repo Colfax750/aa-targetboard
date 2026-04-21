@@ -34,6 +34,16 @@ class TargetForm(forms.ModelForm):
         else:
             self.fields["solar_system"].queryset = EveSolarSystem.objects.none()
 
+        # On POST, include the submitted solar system so Django validation passes
+        if self.data and self.data.get("solar_system"):
+            try:
+                submitted_pk = int(self.data["solar_system"])
+                self.fields["solar_system"].queryset = EveSolarSystem.objects.filter(
+                    pk=submitted_pk
+                )
+            except (ValueError, TypeError):
+                pass
+
     def clean_priority(self):
         p = self.cleaned_data["priority"]
         if p < 1 or p > 5:
