@@ -2,7 +2,7 @@
 
 {% block content %}
 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-  <h2 style="margin: 0;">Target Board TEST</h2>
+  <h2 style="margin: 0;">Target Board</h2>
   {% if perms.aa_targetboard.manage_targets %}
     <a href="{% url 'aa_targetboard:create' %}" class="btn btn-success">
       <i class="fas fa-plus"></i> New Target
@@ -68,12 +68,12 @@
       </th>
 
       <th>
-        {% if order == "system_name" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-system_name">System ▲</a>
-        {% elif order == "-system_name" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=system_name">System ▼</a>
+        {% if order == "solar_system__name" %}
+          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-solar_system__name">System ▲</a>
+        {% elif order == "-solar_system__name" %}
+          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=solar_system__name">System ▼</a>
         {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=system_name">System</a>
+          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=solar_system__name">System</a>
         {% endif %}
       </th>
 
@@ -110,16 +110,6 @@
       </th>
 
       <th>
-        {% if order == "timer_final" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-timer_final">Final ▲</a>
-        {% elif order == "-timer_final" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=timer_final">Final ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=timer_final">Final</a>
-        {% endif %}
-      </th>
-
-      <th>
         {% if order == "updated_at" %}
           <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-updated_at">Updated ▲</a>
         {% elif order == "-updated_at" %}
@@ -141,11 +131,10 @@
         <td>{{ t.get_objective_display }}</td>
         <td>{{ t.priority }}</td>
         <td>{{ t.get_status_display }}</td>
-        <td>{{ t.timer_final|date:"Y-m-d H:i" }}</td>
         <td>{{ t.updated_at|date:"Y-m-d H:i" }}</td>
       </tr>
     {% empty %}
-      <tr><td colspan="9">No targets match your filters.</td></tr>
+      <tr><td colspan="8">No targets match your filters.</td></tr>
     {% endfor %}
   </tbody>
 </table>
