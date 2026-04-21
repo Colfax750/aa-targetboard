@@ -17,3 +17,28 @@
   </div>
 </div>
 {% endblock %}
+
+{% block extra_javascript %}
+<script>
+$(document).ready(function() {
+    $('#id_solar_system').select2({
+        ajax: {
+            url: "{% url 'aa_targetboard:solar_system_search' %}",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
+            },
+            processResults: function(data) {
+                return { results: data.results };
+            },
+            cache: true
+        },
+        minimumInputLength: 2,
+        placeholder: 'Search for a solar system...',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+{% endblock %}

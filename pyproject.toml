@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aa-targetboard"
-version = "1.0.2"
+version = "1.1.0"
 description = "Target Board plugin for Alliance Auth - track EVE Online structure and sovereignty targets"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -12,6 +12,7 @@ license = "MIT"
 dependencies = [
     "allianceauth>=4.0",
     "Django>=4.2",
+    "django-eveuniverse>=1.0",
 ]
 
 [project.urls]

@@ -1,5 +1,3 @@
-# /home/allianceserver/myauth/aa_targetboard/models.py
-
 from django.conf import settings
 from django.db import models
 
@@ -54,7 +52,17 @@ class Target(models.Model):
         default=TargetType.ASTRAHUS,
     )
 
-    system_name = models.CharField(max_length=120, blank=True, default="")
+    solar_system = models.ForeignKey(
+        "eveuniverse.EveSolarSystem",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="aa_targetboard_targets",
+    )
+
+    @property
+    def system_name(self) -> str:
+        return self.solar_system.name if self.solar_system else ""
     structure_name = models.CharField(max_length=255, blank=True, default="")
 
     objective = models.CharField(

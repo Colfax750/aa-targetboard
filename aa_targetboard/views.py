@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
+from eveuniverse.models import EveSolarSystem
 from .forms import TargetForm, TargetUpdateForm
 from .models import Target
 
@@ -21,9 +22,19 @@ def _can_delete(user, target: Target) -> bool:
 
 
 @login_required
+def solar_system_search(request):
+    q = request.GET.get("q", "").strip()
+    results = []
+    if len(q) >= 2:
+        systems = EveSolarSystem.objects.filter(name__icontains=q).order_by("name")[:20]
+        results = [{"id": s.id, "text": s.name} for s in systems]
+    return JsonResponse({"results": results})
+
+
+@login_required
 @permission_required("aa_targetboard.view_target", raise_exception=True)
 def target_list(request):
-    qs = Target.objects.all()
+    qs = Target.objects.select_related("solar_system")
 
     # ---- filters (unchanged) ----
     status = request.GET.get("status", "").strip()
@@ -40,7 +51,7 @@ def target_list(request):
     if search:
         qs = qs.filter(
             Q(title__icontains=search)
-            | Q(system_name__icontains=search)
+            | Q(solar_system__name__icontains=search)
             | Q(structure_name__icontains=search)
             | Q(notes__icontains=search)
         )
@@ -50,7 +61,7 @@ def target_list(request):
 
     allowed_orders = {
         "title", "-title",
-        "system_name", "-system_name",
+        "solar_system__name", "-solar_system__name",
         "structure_name", "-structure_name",
         "target_type", "-target_type",
         "objective", "-objective",
