@@ -1,8 +1,9 @@
-{% extends "allianceauth/base.html" %}
+{% extends "allianceauth/base-bs5.html" %}
+{% block page_title %}Target Board{% endblock %}
 
 {% block content %}
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-  <h2 style="margin: 0;">Target Board</h2>
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">Target Board</h2>
   {% if perms.aa_targetboard.manage_targets %}
     <a href="{% url 'aa_targetboard:create' %}" class="btn btn-success">
       <i class="fas fa-plus"></i> New Target
@@ -10,150 +11,166 @@
   {% endif %}
 </div>
 
-<form method="get" class="form-inline" style="margin-bottom: 15px;">
-  <label>Status</label>
-  <select name="status" class="form-control">
-    <option value="">All</option>
-    {% for val,label in choices.status %}
-      <option value="{{ val }}" {% if filters.status == val %}selected{% endif %}>{{ label }}</option>
-    {% endfor %}
-  </select>
+<form method="get" class="row g-2 align-items-end mb-3">
+  <div class="col-auto">
+    <label class="form-label mb-1">Status</label>
+    <select name="status" class="form-select form-select-sm">
+      <option value="">All</option>
+      {% for val,label in choices.status %}
+        <option value="{{ val }}" {% if filters.status == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-  <label>Objective</label>
-  <select name="objective" class="form-control">
-    <option value="">All</option>
-    {% for val,label in choices.objective %}
-      <option value="{{ val }}" {% if filters.objective == val %}selected{% endif %}>{{ label }}</option>
-    {% endfor %}
-  </select>
+  <div class="col-auto">
+    <label class="form-label mb-1">Objective</label>
+    <select name="objective" class="form-select form-select-sm">
+      <option value="">All</option>
+      {% for val,label in choices.objective %}
+        <option value="{{ val }}" {% if filters.objective == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-  <label>Type</label>
-  <select name="type" class="form-control">
-    <option value="">All</option>
-    {% for val,label in choices.type %}
-      <option value="{{ val }}" {% if filters.type == val %}selected{% endif %}>{{ label }}</option>
-    {% endfor %}
-  </select>
+  <div class="col-auto">
+    <label class="form-label mb-1">Type</label>
+    <select name="type" class="form-select form-select-sm">
+      <option value="">All</option>
+      {% for val,label in choices.type %}
+        <option value="{{ val }}" {% if filters.type == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-  <label>Search</label>
-  <input name="q" class="form-control" value="{{ filters.q }}" placeholder="title/system/notes">
+  <div class="col-auto">
+    <label class="form-label mb-1">Search</label>
+    <input name="q" class="form-control form-control-sm" value="{{ filters.q }}" placeholder="title / system / notes">
+  </div>
 
   <input type="hidden" name="order" value="{{ order }}">
 
-  <button class="btn btn-primary" type="submit">Apply</button>
-  <a class="btn btn-default" href="{% url 'aa_targetboard:list' %}">Reset</a>
+  <div class="col-auto">
+    <button class="btn btn-primary btn-sm" type="submit">Apply</button>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'aa_targetboard:list' %}">Reset</a>
+  </div>
 </form>
 
-<table class="table table-striped table-hover">
-  <thead>
-    <tr>
-      <th>
-        {% if order == "title" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-title">Title ▲</a>
-        {% elif order == "-title" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=title">Title ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=title">Title</a>
-        {% endif %}
-      </th>
-
-      <th>
-        {% if order == "target_type" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-target_type">Type ▲</a>
-        {% elif order == "-target_type" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=target_type">Type ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=target_type">Type</a>
-        {% endif %}
-      </th>
-
-      <th>
-        {% if order == "solar_system__name" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-solar_system__name">System ▲</a>
-        {% elif order == "-solar_system__name" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=solar_system__name">System ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=solar_system__name">System</a>
-        {% endif %}
-      </th>
-
-      <th>Structure</th>
-
-      <th>
-        {% if order == "objective" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-objective">Objective ▲</a>
-        {% elif order == "-objective" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=objective">Objective ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=objective">Objective</a>
-        {% endif %}
-      </th>
-
-      <th>
-        {% if order == "priority" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-priority">Priority ▲</a>
-        {% elif order == "-priority" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=priority">Priority ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=priority">Priority</a>
-        {% endif %}
-      </th>
-
-      <th>
-        {% if order == "status" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-status">Status ▲</a>
-        {% elif order == "-status" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=status">Status ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=status">Status</a>
-        {% endif %}
-      </th>
-
-      <th>
-        {% if order == "updated_at" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-updated_at">Updated ▲</a>
-        {% elif order == "-updated_at" %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=updated_at">Updated ▼</a>
-        {% else %}
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=updated_at">Updated</a>
-        {% endif %}
-      </th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {% for t in targets %}
+<div class="table-responsive">
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
       <tr>
-        <td><a href="{% url 'aa_targetboard:detail' t.pk %}">{{ t.title }}</a></td>
-        <td>{{ t.get_target_type_display }}</td>
-        <td>{{ t.system_name }}</td>
-        <td>{{ t.structure_name }}</td>
-        <td>{{ t.get_objective_display }}</td>
-        <td>{{ t.priority }}</td>
-        <td>{{ t.get_status_display }}</td>
-        <td>{{ t.updated_at|date:"Y-m-d H:i" }}</td>
+        <th>
+          {% if order == "title" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-title">Title ▲</a>
+          {% elif order == "-title" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=title">Title ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=title">Title</a>
+          {% endif %}
+        </th>
+
+        <th>
+          {% if order == "target_type" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-target_type">Type ▲</a>
+          {% elif order == "-target_type" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=target_type">Type ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=target_type">Type</a>
+          {% endif %}
+        </th>
+
+        <th>
+          {% if order == "solar_system__name" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-solar_system__name">System ▲</a>
+          {% elif order == "-solar_system__name" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=solar_system__name">System ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=solar_system__name">System</a>
+          {% endif %}
+        </th>
+
+        <th>Structure</th>
+
+        <th>
+          {% if order == "objective" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-objective">Objective ▲</a>
+          {% elif order == "-objective" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=objective">Objective ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=objective">Objective</a>
+          {% endif %}
+        </th>
+
+        <th>
+          {% if order == "priority" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-priority">Priority ▲</a>
+          {% elif order == "-priority" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=priority">Priority ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=priority">Priority</a>
+          {% endif %}
+        </th>
+
+        <th>
+          {% if order == "status" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-status">Status ▲</a>
+          {% elif order == "-status" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=status">Status ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=status">Status</a>
+          {% endif %}
+        </th>
+
+        <th>
+          {% if order == "updated_at" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=-updated_at">Updated ▲</a>
+          {% elif order == "-updated_at" %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=updated_at">Updated ▼</a>
+          {% else %}
+            <a class="text-white text-decoration-none" href="?{% for k,v in request.GET.items %}{% if k != 'order' and k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}order=updated_at">Updated</a>
+          {% endif %}
+        </th>
       </tr>
-    {% empty %}
-      <tr><td colspan="8">No targets match your filters.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+
+    <tbody>
+      {% for t in targets %}
+        <tr>
+          <td><a href="{% url 'aa_targetboard:detail' t.pk %}">{{ t.title }}</a></td>
+          <td>{{ t.get_target_type_display }}</td>
+          <td>{{ t.system_name }}</td>
+          <td>{{ t.structure_name }}</td>
+          <td>{{ t.get_objective_display }}</td>
+          <td>{{ t.priority }}</td>
+          <td>{{ t.get_status_display }}</td>
+          <td>{{ t.updated_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="8" class="text-center text-muted">No targets match your filters.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% if page_obj and page_obj.has_other_pages %}
-  <nav>
+  <nav aria-label="Target list pagination">
     <ul class="pagination">
       {% if page_obj.has_previous %}
-        <li>
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">Prev</a>
+        <li class="page-item">
+          <a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">Previous</a>
         </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
       {% endif %}
 
-      <li class="active"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+      <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
 
       {% if page_obj.has_next %}
-        <li>
-          <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">Next</a>
+        <li class="page-item">
+          <a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v|urlencode}}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">Next</a>
         </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
       {% endif %}
     </ul>
   </nav>
